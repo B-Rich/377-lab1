@@ -69,30 +69,39 @@ int main() {
 	pid_t pid;
 	int status;
 	int counter;
-	if(parallel){ //p was entered
+	
+	if(!parallel){ //s was entered
+		printf("sequential\n");
 		for(counter = 0; counter < count; counter++){
 			if((pid = fork()) == 0){
 				printf("child process %d\n", getpid());
 				execvp(cmdTokens[0], cmdTokens);
+				exit(0);
 			}else{
-				while((pid = waitpid(-1, &status, 0)) > 0){
-					//wait in loop until children are done
+				while((pid = wait(&status)) > 0){
+					
 				}
-				printf("parent process");
+				printf("parent process\n");
 			}
 		}
-	}else{ //s was entered
-		for(counter = 0; counter < count; counter++){
-			if((pid = fork()) == 0){ //child process
-				printf("child process");
-			}else{ //parent process
-				printf("parent process");
+	}else{ //p was entered
+		printf("parallel");
+		counter = count;
+		while(counter > 0){
+			if((pid = fork()) == 0){
+				printf("child process %d\n", getpid());
+				execvp(cmdTokens[0], cmdTokens);
+			}else{
+				counter--;
+				continue;
 			}
 		}
-	}	
+		while((pid = wait(&status)) > 0){}
+		printf("parent process");
+	}
+		
       // printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
     //exit(1);
 
   }
 }
-
