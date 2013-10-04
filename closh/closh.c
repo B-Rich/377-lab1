@@ -70,38 +70,23 @@ int main() {
 	int status;
 	int counter;
 	
-	if(!parallel){ //s was entered
-		printf("sequential\n");
-		for(counter = 0; counter < count; counter++){
-			if((pid = fork()) == 0){
-				printf("child process %d\n", getpid());
-				execvp(cmdTokens[0], cmdTokens);
-				exit(0);
-			}else{
-				
+	
+	for(counter = 0; counter < count; counter++){
+		if((pid = fork()) == 0){
+			printf("child process %d\n", getpid());
+			execvp(cmdTokens[0], cmdTokens);
+			exit(0);
+		}else{
+			if(!parallel){ //if sequential, wait for child to terminate before spawning new child
 				while((pid = wait(&status)) > 0){
-					
+				
 				}
-			}
-		}
-		printf("parent process\n");
-
-	}else{ //p was entered
-		printf("parallel\n");
-		counter = count;
-		while(counter > 0){
-			if((pid = fork()) == 0){
-				printf("child process %d\n", getpid());
-				execvp(cmdTokens[0], cmdTokens);
-			}else{
-				counter--;
+			}else{ //if parallel, spawn immediately
 				continue;
 			}
 		}
-		while((pid = wait(&status)) > 0){}
-		printf("parent process\n");
 	}
-		
+	printf("parent process\n");
       // printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
     //exit(1);
 
