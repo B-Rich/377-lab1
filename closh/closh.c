@@ -1,11 +1,13 @@
 // closh.c - CS 377, Fall 2013
-// YOUR NAME HERE
+// Nicholas Hirakawa
 
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -63,9 +65,33 @@ int main() {
     // /////////////////////////////////////////////////////
 
     // just executes the given command once - REPLACE THIS CODE WITH YOUR OWN
-    execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
-    printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
-    exit(1);
+
+	pid_t pid;
+	int status;
+	int counter;
+	if(parallel){ //p was entered
+		for(counter = 0; counter < count; counter++){
+			if((pid = fork()) == 0){
+				printf("child process %d\n", getpid());
+				execvp(cmdTokens[0], cmdTokens);
+			}else{
+				while((pid = waitpid(-1, &status, 0)) > 0){
+					//wait in loop until children are done
+				}
+				printf("parent process");
+			}
+		}
+	}else{ //s was entered
+		for(counter = 0; counter < count; counter++){
+			if((pid = fork()) == 0){ //child process
+				printf("child process");
+			}else{ //parent process
+				printf("parent process");
+			}
+		}
+	}	
+      // printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
+    //exit(1);
 
   }
 }
