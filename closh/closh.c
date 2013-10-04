@@ -78,14 +78,16 @@ int main() {
 				execvp(cmdTokens[0], cmdTokens);
 				exit(0);
 			}else{
+				
 				while((pid = wait(&status)) > 0){
 					
 				}
-				printf("parent process\n");
 			}
 		}
+		printf("parent process\n");
+
 	}else{ //p was entered
-		printf("parallel");
+		printf("parallel\n");
 		counter = count;
 		while(counter > 0){
 			if((pid = fork()) == 0){
@@ -97,7 +99,7 @@ int main() {
 			}
 		}
 		while((pid = wait(&status)) > 0){}
-		printf("parent process");
+		printf("parent process\n");
 	}
 		
       // printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
